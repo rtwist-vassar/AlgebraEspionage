@@ -93,7 +93,7 @@ class Enemy {
       return true;
     } else {
       if(this.playingAlert){
-          alertSound.pause();
+          //alertSound.pause();
           this.playingAlert = false;
       }
       return false;
@@ -118,7 +118,7 @@ class Enemy {
           this.playingFastWhir = false;
       }
       if(this.playingAlert){
-          alertSound.pause();
+          //alertSound.pause();
           this.playingAlert = false;
       }
     } else if (this.body.position.x < this.upperBound && !this.facingLeft) {
@@ -138,70 +138,9 @@ class Enemy {
           this.playingFastWhir = false;
       }
       if(this.playingAlert){
-          alertSound.pause();
+          //alertSound.pause();
           this.playingAlert = false;
       }
     } 
   }
-
-  //move(){
-  //  if(this.stopTimer == 0 && this.turnPauseTimer == 0){
-  //    this.seeRect();
-  //    this.lastx = this.x;
-  //    //this.x += this.x_velocity;
-  //    this.keepInPlace();
-  //  }
-  //  else if(this.stopTimer != 0){
-  //    this.stopTimer--;
-  //    if(this.stopTimer == 0){
-  //      this.x_velocity = this.lastx_velocity;
-  //    }
-  //  }
-  //  else if(this.turnPauseTimer != 0){
-  //    //print(this.turnPauseTimer);
-  //    this.turnPauseTimer--;
-  //  }
-  //}
-
-  //keepInPlace(){
-  //  if(this.x < this.lowerBound){
-  //    this.turnPauseTimer = 60;
-  //    this.x = this.lowerBound;
-  //    this.x_velocity *= -1;
-  //    //this.lastx_velocity = this.regx_velocity * (this.x_velocity / abs(this.x_velocity));
-  //  }
-  //  else if(this.x > this.upperBound){
-  //    this.turnPauseTimer = 60;
-  //    this.x = this.upperBound;
-  //    this.x_velocity *= -1;
-  //    //this.lastx_velocity = this.regx_velocity * (this.x_velocity / abs(this.x_velocity));
-  //  }
-  //}
-
-  //seeRect(){
-  //  //let view = 100 * (this.x_velocity / abs(this.x_velocity));
-  //  let view = 100;
-  //  if(this.inView(view)){
-  //    this.x_velocity = this.lastx_velocity * 2;
-  //  }
-  //  else{
-  //    this.x_velocity = this.lastx_velocity;
-  //  }
-  //}
-
-  //inView(view){
-  //  if(view < 0){
-  //    if(this.playerX > this.x + view - 32 && this.playerX < this.x){
-  //      return true;
-  //    }
-  //  }
-  //  else if(view > 0){
-  //    if(this.playerX < this.x + view + 32 && this.playerX > this.x){
-  //      return true;
-  //    }
-  //  }
-  //  else{
-  //    return false;
-  //  }
-  //}
 }//end Enemy class
