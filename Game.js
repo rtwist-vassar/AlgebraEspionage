@@ -22,12 +22,17 @@ function Game() {
     var collideImg = loadImage('collisions.png');
     backToMenu = loadImage('assets/backToMenu.png');
 
-    enemy = new Enemy(32, 32, 700, 224, 0, 500, 900);
+    //creates a new patrolling enemy
+    enemy = new Enemy(32, 32, 600, 240, 1, 550, 1000);
 
     //jump sound effect
-    jump = loadSound('jumping.wav');
-    landing = loadSound('landing.wav');
-    running = loadSound('footsteps.wav');
+    //jump = loadSound('jumping.wav');
+    //landing = loadSound('landing.wav');
+    //running = loadSound('footsteps.wav');
+    //wind = loadSound(this.sceneManager.wind);
+
+    wind.loop();
+    wind.setVolume(0.2);
 
     runningSound = false;
 
@@ -73,11 +78,10 @@ function Game() {
     //size of the tilemap
     var p = tmap.getMapSize();
 
-    for (var x=0; x<map.length; x++)
-    {
+    for (var x=0; x<map.length; x++) {
       if (collidableIndexes.includes(map[x])) {
         var collidable = createSprite(((x % mapDimentions.x)*32)+16, ((floor(x / mapDimentions.x))*32)+16+((p.y / 2)*32), 32, 32);
-        collidable.shapeColor = color(0, 0, 255, 0);
+        collidable.shapeColor = color(0, 0, 255, 0);// color of collisions
         collidable.setCollider('rectangle', 0, 16, 32, 16);
         collidables.add(collidable);
       }
@@ -89,21 +93,34 @@ function Game() {
     player.collide(collidables);
     movement();
     tmap.draw(x, y);
-    rect(this.x, this.y, this.width, this.height);
+    //rect(this.x, this.y, this.width, this.height);
     image(backToMenu, 600, 500);
     enemy.playerX = player.position.x;
-    enemy.cameraVelocityx = cameraVelocityx;
-    enemy.drawE();
-    enemy.move();
+    //console.log(enemy.followingPlayer);
+    //console.log(enemy.playerX);
+    //console.log(enemy.body.position.x); 
+
+    //wind.loop();
+
+    if (enemy.canSeePlayer() && !enemy.followingPlayer && enemy.turnPauseTimer == 0) {
+      enemy.followingPlayer = true;
+    } else if (enemy.followingPlayer && enemy.turnPauseTimer == 0) {
+      enemy.followPlayer();
+    } else {
+      enemy.move();
+    }
+
+    //enemy.drawE();
+
     //console.log(enemy.x);
     //console.log(collidables[0].position.x - 240);
-    console.log(enemy.x);
+    //console.log(x);
+    //console.log(enemy.lowerBound);
     //console.log(player.position.x);
     drawSprites();
   }
 
   function initializeMap() {
-    //tmap.setDrawMode(CENTER);
     var p = tmap.getMapSize();
     y = -(p.y / 2)*32;
     x = 0;
@@ -127,19 +144,19 @@ function Game() {
     }
     jumpTimer--;
 
-
-    if (keyIsDown(LEFT_ARROW)) {
-      //player.changeAnimation("runLeft");
+    //console.log(player.position.x);
+    if (keyIsDown(LEFT_ARROW) && player.position.x > 0) {
       player.position.x -= 2;
-      enemy.x += 2;
+      enemy.lowerBound += 2;
+      enemy.upperBound += 2;
       if (!runningSound) {
         running.loop();
         runningSound = true;
       }
-    } else if (keyIsDown(RIGHT_ARROW)) {
-      //player.changeAnimation("runRight");
+    } else if (keyIsDown(RIGHT_ARROW) && player.position.x < 640) {
       player.position.x += 2;
-      enemy.x -= 2;
+      enemy.lowerBound -= 2;
+      enemy.upperBound -= 2;
       if (!runningSound) {
         running.loop();
         runningSound = true;
@@ -171,6 +188,9 @@ function Game() {
     //var 
     //console.log(cameraVelocityx);
     x += cameraVelocityx;
+
+    //make up for drift of camera
+    enemy.body.position.x -= cameraVelocityx;
 
     for (var y=0; y<collidables.length; y++) {
       var col = collidables[y];
