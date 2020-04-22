@@ -1,5 +1,5 @@
 class Enemy {
-  constructor(width, height, x, y, x_velocity, lowerBound, upperBound) {
+    constructor(width, height, x, y, x_velocity, lowerBound, upperBound, hasKeyCard) {
     //this.width = width;
     //this.height = height;
     //this.x = x;
@@ -14,56 +14,64 @@ class Enemy {
     this.turnPauseTimer = 0;
     this.playerX = 0;
     this.body = createSprite(x, y, width, height);
+    this.body.addAnimation("goRight", "data/enemyRight1.png", "data/enemyRight1.png");
+    this.body.addAnimation("goLeft", "data/enemyLeft1.png", "data/enemyLeft1.png");
     this.facingLeft = true;
     this.followingPlayer = false;
     this.alert = createSprite(x, y-32, 15, 30);
     this.alert.addAnimation("idle", "assets/exclamation/exclamation16.png", "assets/exclamation/exclamation16.png");
     this.alert.addAnimation("alerted", "assets/exclamation/exclamation1.png", "assets/exclamation/exclamation15.png");
-    //this.slowWhir = loadSound('assets/slowWhir.mp3');
-    //this.fastWhir = loadSound('assets/fastWhir.mp3');
     this.playingSlowWhir = false;
     this.playingFastWhir = false;
     this.playingAlert = false;
+    this.hasKeyCard = hasKeyCard;
   }
 
   drawE() {
-    //fill('#FFFFFF');
   }
 
   move() {
     this.followingPlayer = false;
     if (this.turnPauseTimer != 0) {
       this.turnPauseTimer -= 1;
+      if(this.turnPauseTimer == 0){
+        this.facingLeft = !this.facingLeft;
+      }
     } else if (this.body.position.x > this.lowerBound && this.facingLeft) {
       this.body.position.x -= this.x_velocity;
-      if(!this.playingSlowWhir){
+      if(!slowWhir.isPlaying()){
         this.playingSlowWhir = true;
-        slowWhir.loop();
+        slowWhir.play();
       }
     } else if (this.body.position.x < this.lowerBound && this.facingLeft) {
       this.turnPauseTimer = 100;
-      this.facingLeft = false;
+      //this.facingLeft = false;
       this.alert.changeAnimation("idle");
-      if(this.playingSlowWhir){
+      if(slowWhir.isPlaying()){
           slowWhir.pause();
           this.playingSlowWhir = false;
       }
     } else if (this.body.position.x < this.upperBound && !this.facingLeft) {
       this.body.position.x += this.x_velocity;
-      if(!this.playingSlowWhir){
+      if(!slowWhir.isPlaying()){
         this.playingSlowWhir = true;
-        slowWhir.loop();
+        slowWhir.play();
       }
     } else if (this.body.position.x > this.upperBound && !this.facingLeft) {
       this.turnPauseTimer = 100;
-      this.facingLeft = true;
+      //this.facingLeft = true;
       this.alert.changeAnimation("idle");
-      if(this.playingSlowWhir){
+      if(slowWhir.isPlaying()){
           slowWhir.pause();
           this.playingSlowWhir = false;
       }
-    } 
+    }
     this.alert.position.x = this.body.position.x;
+    if(this.facingLeft){
+      this.body.changeAnimation("goLeft");
+    } else {
+      this.body.changeAnimation("goRight");
+    }
   }
 
   canSeePlayer() {
@@ -81,7 +89,7 @@ class Enemy {
       return true;
     } else if (!this.facingLeft && this.playerX < this.body.position.x + 200 && this.playerX > this.body.position.x) {
       this.alert.changeAnimation("alerted");
-      if(this.playingSlowWhir){
+      if(slowWhir.isPlaying()){
           slowWhir.pause();
           this.playingSlowWhir = false;
       }
@@ -104,7 +112,7 @@ class Enemy {
     if (this.body.position.x > this.lowerBound && this.facingLeft) {
       this.body.position.x -= this.x_velocity * 3;
       this.alert.position.x = this.body.position.x;
-      if(!this.playingFastWhir){
+      if(!fastWhir.isPlaying()){
           fastWhir.play();
           this.playingFastWhir = true;
       }
@@ -113,7 +121,7 @@ class Enemy {
       this.facingLeft = false;
       this.followingPlayer = false;
       this.alert.changeAnimation("idle");
-      if(this.playingFastWhir){
+      if(fastWhir.isPlaying()){
           fastWhir.pause();
           this.playingFastWhir = false;
       }
@@ -124,7 +132,7 @@ class Enemy {
     } else if (this.body.position.x < this.upperBound && !this.facingLeft) {
       this.body.position.x += this.x_velocity * 3;
       this.alert.position.x = this.body.position.x;
-      if(!this.playingFastWhir){
+      if(!fastWhir.isPlaying()){
           fastWhir.play();
           this.playingFastWhir = true;
       }
@@ -133,7 +141,7 @@ class Enemy {
       this.facingLeft = true;
       this.followingPlayer = false;
       this.alert.changeAnimation("idle");
-      if(this.playingFastWhir){
+      if(fastWhir.isPlaying){
           fastWhir.pause();
           this.playingFastWhir = false;
       }
@@ -141,6 +149,6 @@ class Enemy {
           //alertSound.pause();
           this.playingAlert = false;
       }
-    } 
+    }
   }
 }//end Enemy class
