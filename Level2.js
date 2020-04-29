@@ -1,4 +1,4 @@
-function Game() {
+function Level2() {
   var tmap;
   var x, y;
   var player;
@@ -18,7 +18,7 @@ function Game() {
   var endLevelX;
 
   this.setup = function() {
-    currentScene = Game;
+    currentScene = Level2;
 
     tmap = loadTiledMap("office2", "data");
     initializeMap();
@@ -53,7 +53,6 @@ function Game() {
 
     //id number of collidable tiles in the map
     collidableIndexes = [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 5, 15, 17, 7, 40, 30, 20, 8, 9];
-    //collidableIndexes = [28, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 5, 15, 17, 7, 40, 30, 20, 8, 9];
 
     //creating a group of all invisible collidable objects for the floor/walls 
     collidables = new Group();
@@ -118,11 +117,6 @@ function initializeEntities() {
 
   enemy = new Enemy(32, 32, 600, 272, 1, 550, 1000, true);
   enemy.body.setCollider('rectangle', 11, 10, 10, 26);
-  
-  compAlert = createSprite((computerX*2) + 16, 200, 15, 30);
-  compAlert.addAnimation("idle", "assets/exclamation/exclamation16.png", "assets/exclamation/exclamation16.png");
-  compAlert.addAnimation("alerted", "assets/exclamation/exclamation1.png", "assets/exclamation/exclamation15.png");
-  compAlert.changeAnimation("idle");
 } 
 
 this.draw = function() {
@@ -159,8 +153,6 @@ this.draw = function() {
     player.remove();
     initializeEntities();
   }
-  textSize(16);
-  text ("Use arrow keys to move\nGet behind the enemy and press 'e' to steal the keycard\nAfter stealing the keycard, you can go to the computer and press 'e' to complete a question\nAfter completeing a question, enter the elevator and press 'e' to go to the next level" , 20, 20);
 }
 
 function initializeMap() {
@@ -217,7 +209,6 @@ function movement() {
   //console.log(player.position.x);
   if (keyIsDown(LEFT_ARROW) && player.position.x > 0) {
     player.position.x -= 2;
-    compAlert.position.x +=2;
     enemy.lowerBound += 2;
     enemy.upperBound += 2;
     if (!runningSound) {
@@ -227,7 +218,6 @@ function movement() {
   } else if (keyIsDown(RIGHT_ARROW) && player.position.x < 640) {
     player.position.x += 2;
     enemy.lowerBound -= 2;
-    compAlert.position.x -=2;
     enemy.upperBound -= 2;
     if (!runningSound) {
       running.loop();
@@ -263,9 +253,6 @@ function movement() {
 
   //make up for drift of camera
   enemy.body.position.x -= cameraVelocityx;
-  compAlert.position.x += cameraVelocityx;
-  
-  console.log(computerX + "   " + compAlert.position.x);
 
   for (var y=0; y<collidables.length; y++) {
     var col = collidables[y];
@@ -342,7 +329,7 @@ function behindEnemy() {
   if (enemy.facingLeft) {
     if (player.position.x > enemy.body.position.x) {
       //print('player x = ' + player.position.x + ', ' + (enemy.body.position.x + enemy.body.width + 150));
-      if (player.position.x < (enemy.body.position.x + enemy.body.width + 80)) {
+      if (player.position.x < (enemy.body.position.x + enemy.body.width + 50)) {
         //console.log("behind enemy (on right)");
         return true;
       }
@@ -353,7 +340,7 @@ function behindEnemy() {
   } else {
     if (player.position.x < (enemy.body.position.x + enemy.body.width)) {
       //print('to the left');
-      if (player.position.x > (enemy.body.position.x - 80)) {
+      if (player.position.x > (enemy.body.position.x - 50)) {
         //console.log("behind enemy (on left)");
         return true;
       }
@@ -369,8 +356,6 @@ function takeCard() {
     //console.log("taking keycard");
     inventory.keycards++;
     enemy.hasKeyCard = false;
-    //compAlert.changeAnimation("alerted");
-    console.log("Got here");
   }
 }
 
@@ -387,7 +372,7 @@ function isAtEnd() {
     enemy.body.remove();
     enemy.alert.remove();
     player.remove();
-    this.mgr.showScene(Level2);
+    this.mgr.showScene(Menu);
   }
 }
 
@@ -399,4 +384,4 @@ function keyPressed() {
   }
 }
 
-}//end of game scene
+}//end of Level2 scene

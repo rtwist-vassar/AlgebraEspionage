@@ -1,16 +1,11 @@
 class Enemy {
     constructor(width, height, x, y, x_velocity, lowerBound, upperBound, hasKeyCard) {
-    //this.width = width;
-    //this.height = height;
-    //this.x = x;
-    //this.y = y;
+
     this.x_velocity = x_velocity;
-    //this.lastx_velocity = x_velocity;
-    //this.regx_velocity = x_velocity;
-    //this.lastx = x;
+
     this.lowerBound = lowerBound;
     this.upperBound = upperBound;
-    //this.stopTimer = 0;
+
     this.turnPauseTimer = 0;
     this.playerX = 0;
     this.body = createSprite(x, y, width, height);
@@ -21,16 +16,25 @@ class Enemy {
     this.alert = createSprite(x, y-32, 15, 30);
     this.alert.addAnimation("idle", "assets/exclamation/exclamation16.png", "assets/exclamation/exclamation16.png");
     this.alert.addAnimation("alerted", "assets/exclamation/exclamation1.png", "assets/exclamation/exclamation15.png");
+    
+    //shows the keycard above the enemy
+    this.alert.addAnimation("show", "assets/keycard/keycard1.png", "assets/keycard/keycard15.png");
     this.playingSlowWhir = false;
     this.playingFastWhir = false;
     this.playingAlert = false;
-    this.hasKeyCard = hasKeyCard;
+    this.hasKeyCard = true;
   }
 
   drawE() {
   }
 
   move() {
+    if(this.hasKeyCard){
+      this.alert.changeAnimation("show");
+    } else{
+      this.alert.changeAnimation("idle");
+    }
+    
     this.followingPlayer = false;
     if (this.turnPauseTimer != 0) {
       this.turnPauseTimer -= 1;
@@ -110,7 +114,7 @@ class Enemy {
 
   followPlayer() {
     if (this.body.position.x > this.lowerBound && this.facingLeft) {
-      this.body.position.x -= this.x_velocity * 3;
+      this.body.position.x -= this.x_velocity * 2;
       this.alert.position.x = this.body.position.x;
       if(!fastWhir.isPlaying()){
           fastWhir.play();
@@ -130,7 +134,7 @@ class Enemy {
           this.playingAlert = false;
       }
     } else if (this.body.position.x < this.upperBound && !this.facingLeft) {
-      this.body.position.x += this.x_velocity * 3;
+      this.body.position.x += this.x_velocity * 2;
       this.alert.position.x = this.body.position.x;
       if(!fastWhir.isPlaying()){
           fastWhir.play();

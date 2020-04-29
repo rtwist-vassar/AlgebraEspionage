@@ -9,7 +9,7 @@ function Menu() {
   }
   this.mousePressed = function(){
     if(mouseX > 182 && mouseX < 602 && mouseY > 258 && mouseY < 338){
-      this.sceneManager.showScene(Game);
+      this.sceneManager.showScene(currentScene);
     }
     else if(mouseX >182 && mouseX < 602 && mouseY > 385 && mouseY < 466){
       //console.log("gotohelp");
