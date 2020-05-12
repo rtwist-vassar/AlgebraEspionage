@@ -11,19 +11,19 @@ function MathS() {
   let correct = false;
   this.setup = function() {
     QImg = loadImage('assets/questionText.png');
+    TVScreen = loadImage('assets/TVScreen.png');
     inp = createInput('');
     inp.input(myInputEvent);
-    inp.position(305, 380);
+    inp.position(305+cnv.x, 380+cnv.y);
     submit = createButton('Submit');
-    submit.position(490, 380);
+    submit.position(490+cnv.x, 380+cnv.y);
     submit.mousePressed(Saveinput);
     mathMap = new Map();
     newQuestion();
     goNext = createButton('Go Next');
-    goNext.position(500, 480);
+    goNext.position(500+cnv.x, 480+cnv.y);
     goNext.mousePressed(Next);
     goNext.hide();
-    console.log(mathMap.size);
     i = floor(random(mathMap.size));
   }
 
@@ -34,9 +34,9 @@ function MathS() {
       submit.show();
     }
     background(100);
+    image(TVScreen, 0, 0);
     image(QImg, 200, 100);
     curQ = mathMap.get(i);
-    console.log(curQ.question);
     textSize(24);
     textStyle(BOLD);
     textAlign(CENTER);
@@ -45,17 +45,15 @@ function MathS() {
     text(result, 350, 500);
   }
   function myInputEvent() {
-    console.log('success');
   }
   function mousePressed() {
   }
   function Saveinput() {
-    console.log(inp.value());
     if (inp.value() == curQ.answer) {
-      result = 'correct';
+      result = 'Correct!';
       goNext.show();
     } else {
-      result = 'wrong';
+      result = 'Wrong';
     }
   }
   function Next() {
@@ -65,7 +63,7 @@ function MathS() {
     firstTime = false;
     getNewQuestion();
     result = '';
-    inp.value('answer');
+    inp.value('');
   }
 
   function newQuestion() {
@@ -79,7 +77,6 @@ function MathS() {
     mathMap.delete(i);
     i = randomKey(mathMap);
     this.answeredQuestion = true;
-    console.log(currentScene);
     mgr.showScene( currentScene );
   }
   function randomKey(collection) {

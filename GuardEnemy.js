@@ -22,7 +22,8 @@ class Enemy {
     this.playingSlowWhir = false;
     this.playingFastWhir = false;
     this.playingAlert = false;
-    this.hasKeyCard = true;
+    this.hasKeyCard = hasKeyCard;
+    this.playerHiding = false;
   }
 
   drawE() {
@@ -41,13 +42,13 @@ class Enemy {
       if(this.turnPauseTimer == 0){
         this.facingLeft = !this.facingLeft;
       }
-    } else if (this.body.position.x > this.lowerBound && this.facingLeft) {
+    } else if (this.body.position.x >= this.lowerBound && this.facingLeft) {
       this.body.position.x -= this.x_velocity;
       if(!slowWhir.isPlaying()){
         this.playingSlowWhir = true;
         slowWhir.play();
       }
-    } else if (this.body.position.x < this.lowerBound && this.facingLeft) {
+    } else if (this.body.position.x <= this.lowerBound && this.facingLeft) {
       this.turnPauseTimer = 100;
       //this.facingLeft = false;
       this.alert.changeAnimation("idle");
@@ -55,13 +56,13 @@ class Enemy {
           slowWhir.pause();
           this.playingSlowWhir = false;
       }
-    } else if (this.body.position.x < this.upperBound && !this.facingLeft) {
+    } else if (this.body.position.x <= this.upperBound && !this.facingLeft) {
       this.body.position.x += this.x_velocity;
       if(!slowWhir.isPlaying()){
         this.playingSlowWhir = true;
         slowWhir.play();
       }
-    } else if (this.body.position.x > this.upperBound && !this.facingLeft) {
+    } else if (this.body.position.x >= this.upperBound && !this.facingLeft) {
       this.turnPauseTimer = 100;
       //this.facingLeft = true;
       this.alert.changeAnimation("idle");
@@ -79,7 +80,7 @@ class Enemy {
   }
 
   canSeePlayer() {
-    if (this.facingLeft && this.playerX > this.body.position.x - 200 && this.playerX < this.body.position.x) {
+    if (this.facingLeft && this.playerX > this.body.position.x - 200 && this.playerX < this.body.position.x && !this.playerHiding && this.playerX > this.lowerBound  && this.playerX < this.upperBound) {
       this.alert.changeAnimation("alerted");
       if(!this.playingAlert){
           alertSound.play(0);
@@ -91,7 +92,7 @@ class Enemy {
       }
       this.alert.position.x = this.body.position.x;
       return true;
-    } else if (!this.facingLeft && this.playerX < this.body.position.x + 200 && this.playerX > this.body.position.x) {
+    } else if (!this.facingLeft && this.playerX < this.body.position.x + 200 && this.playerX > this.body.position.x && !this.playerHiding && this.playerX > this.lowerBound  && this.playerX < this.upperBound) {
       this.alert.changeAnimation("alerted");
       if(slowWhir.isPlaying()){
           slowWhir.pause();

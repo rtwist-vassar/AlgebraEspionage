@@ -1,3 +1,4 @@
+//data for level 1 tilemap
 (function(name,data){
  if(typeof onTileMapLoaded === 'undefined') {
   if(typeof TileMaps === 'undefined') TileMaps = {};
